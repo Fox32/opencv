@@ -80,12 +80,22 @@ const cv::String XMLConfig =
         "</Log>"
         "<ProductionNodes>"
                 "<Node type=\"Image\" name=\"Image1\" stopOnError=\"false\">"
+						"<Query>"
+							"<NeededNodes>"
+								"<Node>%s</Node>"
+							"</NeededNodes>"
+						"</Query>"
                         "<Configuration>"
                                 "<MapOutputMode xRes=\"640\" yRes=\"480\" FPS=\"30\"/>"
                                 "<Mirror on=\"false\"/>"
                         "</Configuration>"
                 "</Node> "
                 "<Node type=\"Depth\" name=\"Depth1\">"
+						"<Query>"
+							"<NeededNodes>"
+								"<Node>%s</Node>"
+							"</NeededNodes>"
+						"</Query>"
                         "<Configuration>"
                                 "<MapOutputMode xRes=\"640\" yRes=\"480\" FPS=\"30\"/>"
                                 "<Mirror on=\"false\"/>"
@@ -592,8 +602,10 @@ CvCapture_OpenNI::CvCapture_OpenNI( int index )
         return;
     }
 
+	cv::String formattedXMLConfig = cv::format( XMLConfig.c_str(), deviceNode.GetInstanceName(), deviceNode.GetInstanceName() );
+
     xn::ScriptNode scriptNode;
-    status = context.RunXmlScript( XMLConfig.c_str(), scriptNode );
+	status = context.RunXmlScript( formattedXMLConfig.c_str(), scriptNode);
     if( status != XN_STATUS_OK )
     {
         fprintf(stderr, "CvCapture_OpenNI::CvCapture_OpenNI : Failed to run xml script: %s\n", xnGetStatusString(status));
